@@ -63,9 +63,22 @@ jobs:
   DeployProd:
     needs: [DeployStaging]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
     environment:
       name: Prod
       url: 'http://www.myapp.com'
     steps:
+      - name: Configure AWS Creds
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          role-to-assume: arn:aws:iam::842572306205:role/github-stage-role
+          role-session-name: github_aws_federated_oidc
+          aws-region: us-east-1
+      - name: Test AWS Creds
+        run: |
+          aws sts get-caller-identity
       - name: Deploy
-        run: echo Deploying to Staging!
+        run: echo Deploying to Prod!
