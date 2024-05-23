@@ -45,6 +45,15 @@ jobs:
       name: Staging
       url: 'http://test.myapp.com'
     steps:
+      - name: Configure AWS Creds
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          role-to-assume: arn:aws:iam::053353455593:role/github-stage-role
+          role-session-name: github_aws_federated_oidc
+          aws-region: us-east-1
+      - name: Test AWS Creds
+        run: |
+          aws sts get-caller-identity
       - name: Deploy
         run: echo Deploying to Staging!
   DeployProd:
