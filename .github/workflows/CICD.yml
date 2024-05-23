@@ -74,7 +74,7 @@ jobs:
       - name: Configure AWS Creds
         uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
-          role-to-assume: arn:aws:iam::842572306205:role/github-stage-role
+          role-to-assume: arn:aws:iam::842572306205:role/github-prod-role
           role-session-name: github_aws_federated_oidc
           aws-region: us-east-1
       - name: Test AWS Creds
