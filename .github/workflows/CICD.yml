@@ -34,7 +34,7 @@ jobs:
     steps:
       - name: Deploy
         run: echo Deploying to Staging!
-  DeployStaging:
+  DeployProd:
     needs: [DeployStaging]
     runs-on: ubuntu-latest
     environment:
