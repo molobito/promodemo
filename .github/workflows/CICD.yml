@@ -22,7 +22,7 @@ jobs:
       name: Dev
       url: 'http://dev.myapp.com'
     steps:
-    - name: Configure AWS Creds
+      - name: Configure AWS Creds
         uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
           role-to-assume: arn:aws:iam::282527170177:role/github-dev-role
