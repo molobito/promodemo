@@ -18,6 +18,10 @@ jobs:
     if: github.event_name == 'pull_request'
     needs: [Build]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
     environment:
       name: Dev
       url: 'http://dev.myapp.com'
