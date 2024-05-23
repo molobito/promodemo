@@ -28,6 +28,9 @@ jobs:
           role-to-assume: arn:aws:iam::282527170177:role/github-dev-role
           role-session-name: github_aws_federated_oidc
           aws-region: us-east-1
+      - name: Test AWS Creds
+        run: |
+          aws sts get-caller-identity
       - name: Deploy
         run: echo Deploying to Dev!
   DeployStaging:
