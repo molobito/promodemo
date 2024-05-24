@@ -64,6 +64,16 @@ jobs:
       - name: Display loaded Docker images
         run: |
           docker images
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ env.IMG_NAME }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
   DeployStaging:
     if: github.event.ref == 'refs/heads/main'
     needs: [Build]
