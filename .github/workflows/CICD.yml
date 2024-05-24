@@ -18,7 +18,11 @@ jobs:
           docker build --build-arg PARENT_IMG=${{ env.PARENT_IMAGE }} -t ${{ github.repository }}:${{ github.sha }} .
       - name: Save App Img as Artifact
         run: |
-          docker save --output ${{ build.artifactsstagingdirectory }}/${{ github.repository }}.img.tar ${{ github.repository }}:${{ github.sha }} 
+          docker save --output ${{ github.workspace }}/${{ github.repository }}.img.tar ${{ github.repository }}:${{ github.sha }} 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: img-artifact-${{ github.repository }}
+          path: ${{ github.workspace }}/${{ github.repository }}.img.tar
   DeployDev:
     if: github.event_name == 'pull_request'
     needs: [Build]
