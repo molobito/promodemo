@@ -61,7 +61,7 @@ jobs:
       - name: Tag Docker Local Img
         run: |
           docker image tag ${{ env.IMG_NAME }}:${{ github.sha }} ${{ env.DEV_ACT }}.dkr.ecr.us-east-1.amazonaws.com/${{ env.IMG_NAME }}:${{ github.sha }}
-        - name: Display loaded Docker images
+      - name: Display loaded Docker images
         run: |
           docker images
   DeployStaging:
