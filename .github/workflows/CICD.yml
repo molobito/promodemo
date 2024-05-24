@@ -5,15 +5,19 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
+  PARENT_IMAGE: "gcr.io/distroless/static-debian12@sha256:8cbe18a8a9a9fefe70590dc8f6a7bc70b4bbe41f262d9dab9084337adabf6d26"
 jobs:
   Build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-      - name: Compile
-        run: echo Building!
+      - name: Build App Img from Dockerfile
+        run: |
+          docker build --build-arg PARENT_IMG=${{ env.PARENT_IMAGE }} -t ${{ github.repository }}:${{ github.sha }} .
+      - name: Save App Img as Artifact
+        run: |
+          docker save --output ${{ build.artifactsstagingdirectory }}/${{ github.repository }}.img.tar ${{ github.repository }}:${{ github.sha }} 
   DeployDev:
     if: github.event_name == 'pull_request'
     needs: [Build]
