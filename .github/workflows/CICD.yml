@@ -7,6 +7,7 @@ on:
     branches: [ main ]
 env:
   PARENT_IMAGE: "gcr.io/distroless/static-debian12@sha256:8cbe18a8a9a9fefe70590dc8f6a7bc70b4bbe41f262d9dab9084337adabf6d26"
+  IMG_NAME: "promodemoapp"
 jobs:
   Build:
     runs-on: ubuntu-latest
@@ -15,14 +16,14 @@ jobs:
         uses: actions/checkout@v2
       - name: Build App Img from Dockerfile
         run: |
-          docker build --build-arg PARENT_IMG=${{ env.PARENT_IMAGE }} -t ${{ github.repository }}:${{ github.sha }} .
+          docker build --build-arg PARENT_IMG=${{ env.PARENT_IMAGE }} -t ${{ env.IMG_NAME }}:${{ github.sha }} .
       - name: Save App Img as Artifact
         run: |
-          docker save --output ${{ github.workspace }}/${{ github.repository }}.img.tar ${{ github.repository }}:${{ github.sha }} 
+          docker save --output ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar ${{ env.IMG_NAME }}:${{ github.sha }} 
       - uses: actions/upload-artifact@v4
         with:
           name: img-artifact-${{ github.repository }}
-          path: ${{ github.workspace }}/${{ github.repository }}.img.tar
+          path: ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar
   DeployDev:
     if: github.event_name == 'pull_request'
     needs: [Build]
