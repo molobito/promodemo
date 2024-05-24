@@ -48,15 +48,19 @@ jobs:
       - name: Test AWS Creds
         run: |
           aws sts get-caller-identity
-      - name: Download Img Artifact
+      - name: Download Img Tar Artifact
         uses: actions/download-artifact@v4
         with:
           name: img-artifact-${{ env.IMG_NAME }}
           path: ${{ github.workspace }}
       - name: Display Downloaded Img Artifact
         run: ls -R ${{ github.workspace }}
-      - name: Deploy
-        run: echo Deploying to Dev!
+      - name: Load App Img Tar into Docker
+        run: |
+          docker load -i ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar
+      - name: Display loaded Docker images
+        run: |
+          docker images
   DeployStaging:
     if: github.event.ref == 'refs/heads/main'
     needs: [Build]
