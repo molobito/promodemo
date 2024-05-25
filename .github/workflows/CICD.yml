@@ -47,7 +47,7 @@ jobs:
       id-token: write
     environment:
       name: Dev
-      url: ${{ steps.step_id.gen_img_digest.outputs.URL_OUTPUT }}
+      url: ${{ steps.gen_img_digest.outputs.URL_OUTPUT }}
 
     steps:
       - name: Configure AWS Creds
@@ -129,7 +129,7 @@ jobs:
       id-token: write
     environment:
       name: Dev
-      url: ${{ steps.step_id.gen_img_digest.outputs.URL_OUTPUT }}
+      url: ${{ steps.gen_img_digest.outputs.URL_OUTPUT }}
 
     steps:
       - name: Configure AWS Creds
