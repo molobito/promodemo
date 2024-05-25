@@ -47,87 +47,7 @@ jobs:
       id-token: write
     environment:
       name: Dev
-      url: 'http://dev.myapp.com'
-
-    steps:
-      - name: Configure AWS Creds
-        uses: aws-actions/configure-aws-credentials@v4.0.2
-        with:
-          role-to-assume: arn:aws:iam::${{ env.DEV_ACT }}:role/github-dev-role
-          role-session-name: github_aws_federated_oidc
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Test AWS Creds
-        run: |
-          aws sts get-caller-identity
-
-      - name: Install Crypto-Signer
-        uses: sigstore/cosign-installer@main
-        with:
-          cosign-release: 'v2.2.4'
-
-      - name: Install JQ
-        run: sudo apt install -y jq
-
-      - name: Download Img Tar Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: img-artifact-${{ env.IMG_NAME }}
-          path: ${{ github.workspace }}
-
-      - name: Display Downloaded Img Artifact
-        run: ls -R ${{ github.workspace }}
-
-      - name: Gen md5sum for Img Tar
-        run: md5sum ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar
-
-      - name: Load App Img Tar into Docker
-        run: |
-          docker load -i ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar
-
-      - name: Tag Docker Local Img
-        run: |
-          docker image tag ${{ env.IMG_NAME }}:${{ github.sha }} ${{ env.DEV_ACT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMG_NAME }}:${{ github.sha }}
-  
-      - name: Display loaded Docker images
-        run: |
-          docker images
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Push docker image to Amazon ECR
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: ${{ env.IMG_NAME }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-
-      - name: Obtain Img Digest
-        shell: bash
-        id: gen_img_digest
-        run: |
-            IMG_DIGEST=$(docker inspect --format='{{index  .RepoDigests 0}}' ${{ env.DEV_ACT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMG_NAME }}:${{ github.sha }}|tr -d '\n') 
-            echo $IMG_DIGEST
-            echo "IMAGE_DIGEST=$IMG_DIGEST" >> $GITHUB_OUTPUT
-
-      - name: Crypto-Sign Image
-        shell: bash
-        run: cosign sign --key awskms:///${{ env.AWS_KMS_KEY }} --tlog-upload=false ${{ steps.gen_img_digest.outputs.IMAGE_DIGEST }}
-
-  DeployDev:
-    if: github.event.ref == 'refs/heads/main'
-    needs: [Build]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
-    environment:
-      name: Dev
-      url: "http://${{ steps.step_id.gen_img_digest.outputs.IMAGE_DIGEST_SUBSTR }}.dev.promodemoapp.com"
+      url: ${{ steps.step_id.gen_img_digest.outputs.URL_OUTPUT }}
 
     steps:
       - name: Configure AWS Creds
@@ -192,8 +112,90 @@ jobs:
             IMG_DIGEST=$(docker inspect --format='{{index  .RepoDigests 0}}' ${{ env.DEV_ACT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMG_NAME }}:${{ github.sha }}|tr -d '\n') 
             echo IMAGE SHA256 DIGEST: $IMG_DIGEST
             IMG_DIGEST_SUBSTR=${IMG_DIGEST:0:8}
+            echo "URL_OUTPUT="https://${IMG_DIGEST_SUBSTR}.dev.${{env.IMG_NAME}}.com" >> $GITHUB_OUTPUT
             echo "IMAGE_DIGEST=$IMG_DIGEST" >> $GITHUB_OUTPUT
-            echo "IMAGE_DIGEST_SUBSTR=$IMG_DIGEST_SUBSTR" >> $GITHUB_OUTPUT
+
+      - name: Crypto-Sign Image
+        shell: bash
+        run: cosign sign --key awskms:///${{ env.AWS_KMS_KEY }} --tlog-upload=false ${{ steps.gen_img_digest.outputs.IMAGE_DIGEST }}
+
+  DeployDev:
+    if: github.event.ref == 'refs/heads/main'
+    needs: [Build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    environment:
+      name: Dev
+      url: ${{ steps.step_id.gen_img_digest.outputs.URL_OUTPUT }}
+
+    steps:
+      - name: Configure AWS Creds
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          role-to-assume: arn:aws:iam::${{ env.DEV_ACT }}:role/github-dev-role
+          role-session-name: github_aws_federated_oidc
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Test AWS Creds
+        run: |
+          aws sts get-caller-identity
+
+      - name: Install Crypto-Signer
+        uses: sigstore/cosign-installer@main
+        with:
+          cosign-release: 'v2.2.4'
+
+      - name: Install JQ
+        run: sudo apt install -y jq
+
+      - name: Download Img Tar Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: img-artifact-${{ env.IMG_NAME }}
+          path: ${{ github.workspace }}
+
+      - name: Display Downloaded Img Artifact
+        run: ls -R ${{ github.workspace }}
+
+      - name: Gen md5sum for Img Tar
+        run: md5sum ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar
+
+      - name: Load App Img Tar into Docker
+        run: |
+          docker load -i ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar
+
+      - name: Tag Docker Local Img
+        run: |
+          docker image tag ${{ env.IMG_NAME }}:${{ github.sha }} ${{ env.DEV_ACT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMG_NAME }}:${{ github.sha }}
+  
+      - name: Display loaded Docker images
+        run: |
+          docker images
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ env.IMG_NAME }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: Obtain Img Digest
+        shell: bash
+        id: gen_img_digest
+        run: |
+            IMG_DIGEST=$(docker inspect --format='{{index  .RepoDigests 0}}' ${{ env.DEV_ACT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMG_NAME }}:${{ github.sha }}|tr -d '\n') 
+            echo IMAGE SHA256 DIGEST: $IMG_DIGEST
+            IMG_DIGEST_SUBSTR=${IMG_DIGEST:0:8}
+            echo "URL_OUTPUT="https://${IMG_DIGEST_SUBSTR}.dev.${{env.IMG_NAME}}.com" >> $GITHUB_OUTPUT
+            echo "IMAGE_DIGEST=$IMG_DIGEST" >> $GITHUB_OUTPUT
 
       - name: Crypto-Sign Image
         shell: bash
