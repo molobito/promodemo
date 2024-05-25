@@ -54,7 +54,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::${{ env.DEV_ACT }}:role/github-dev-role
           role-session-name: github_aws_federated_oidc
-          aws-region: $(( env.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Test AWS Creds
         run: |
