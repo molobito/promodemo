@@ -84,8 +84,6 @@ jobs:
       - name: Tag Docker Local Img
         run: |
           docker image tag ${{ env.IMG_NAME }}:${{ github.sha }} ${{ env.DEV_ACT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMG_NAME }}:${{ github.sha }}
-          docker image tag ${{ env.IMG_NAME }}:${{ github.sha }} ${{ env.DEV_ACT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMG_NAME }}:latest
-
       - name: Display loaded Docker images
         run: |
           docker images
@@ -101,8 +99,6 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          docker push $REGISTRY/$REPOSITORY:latest
-
       - name: Obtain Img Digest
         shell: bash
         id: gen_img_digest
@@ -112,7 +108,7 @@ jobs:
 
       - name: Crypto-Sign Image
         shell: bash
-        run: cosign sign --key awskms:///${{ env.AWS_KMS_KEY }} --tlog-upload=false ${{ env.DEV_ACT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMG_NAME }}@${{ steps.gen_img_digest.outputs.IMAGE_DIGEST }}
+        run: cosign sign --key awskms:///${{ env.AWS_KMS_KEY }} --tlog-upload=false ${{ steps.gen_img_digest.outputs.IMAGE_DIGEST }}
 
   DeployStaging:
     if: github.event.ref == 'refs/heads/main'
