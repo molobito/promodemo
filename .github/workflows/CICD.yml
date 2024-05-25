@@ -127,7 +127,7 @@ jobs:
       id-token: write
     environment:
       name: Dev
-      url: "http://${{ steps.step_id.gen_img_digest.IMAGE_DIGEST_SUBSTR }}.dev.promodemoapp.com"
+      url: "http://${{ steps.step_id.gen_img_digest.outputs.IMAGE_DIGEST_SUBSTR }}.dev.promodemoapp.com"
 
     steps:
       - name: Configure AWS Creds
