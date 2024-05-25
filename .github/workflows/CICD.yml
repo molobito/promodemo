@@ -127,7 +127,7 @@ jobs:
       id-token: write
     environment:
       name: Dev
-      url: 'http://dev.myapp.com'
+      url: "http://${{ steps.step_id.gen_img_digest.IMAGE_DIGEST_SUBSTR }}.dev.promodemoapp.com"
 
     steps:
       - name: Configure AWS Creds
@@ -190,8 +190,10 @@ jobs:
         id: gen_img_digest
         run: |
             IMG_DIGEST=$(docker inspect --format='{{index  .RepoDigests 0}}' ${{ env.DEV_ACT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMG_NAME }}:${{ github.sha }}|tr -d '\n') 
-            echo $IMG_DIGEST
+            echo IMAGE SHA256 DIGEST: $IMG_DIGEST
+            IMG_DIGEST_SUBSTR=${IMG_DIGEST:0:8}
             echo "IMAGE_DIGEST=$IMG_DIGEST" >> $GITHUB_OUTPUT
+            echo "IMAGE_DIGEST_SUBSTR=$IMG_DIGEST_SUBSTR" >> $GITHUB_OUTPUT
 
       - name: Crypto-Sign Image
         shell: bash
