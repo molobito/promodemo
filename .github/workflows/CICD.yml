@@ -28,6 +28,9 @@ jobs:
         run: |
           docker save --output ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar ${{ env.IMG_NAME }}:${{ github.sha }}
 
+      - name: Gen md5sum for Img Tar
+        run: md5sum ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar
+
       - name: Upload App Img Tar as Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -76,6 +79,9 @@ jobs:
 
       - name: Display Downloaded Img Artifact
         run: ls -R ${{ github.workspace }}
+
+      - name: Gen md5sum for Img Tar
+        run: md5sum ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar
 
       - name: Load App Img Tar into Docker
         run: |
