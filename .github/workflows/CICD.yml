@@ -59,7 +59,7 @@ jobs:
       - name: AntiMalware Img Scan
         run: |
           mkdir ${{ github.workspace }}/scan_tmp
-          tar -xf {{ github.workspace }}/${{ env.IMG_NAME }}.img.tar -C ${{ github.workspace }}/scan_tmp > /dev/null 2>&1
+          tar -xf {{ github.workspace }}/${{ env.IMG_NAME }}.img.tar -C ${{ github.workspace }}/scan_tmp
           clamscan -r ${{ github.workspace }}/scan_tmp
           
       - name: Vulnerability Img Scan
