@@ -1,4 +1,4 @@
-name: CI - CD
+name: CI-CD
 
 on:
   push:
@@ -14,73 +14,10 @@ env:
   STAGE_ACT: "053353455593"
   PROD_ACT: "842572306205"
 jobs:
-  Build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Build App Img from Dockerfile
-        run: |
-          docker build --build-arg PARENT_IMG=${{ env.PARENT_IMAGE }} -t ${{ env.IMG_NAME }}:${{ github.sha }} .
-
-      - name: Save App Img Locally as Tar
-        run: |
-          docker save --output ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar ${{ env.IMG_NAME }}:${{ github.sha }}
-
-      - name: Install AntiMalware
-        run: |
-          sudo groupadd clamav
-          sudo useradd -g clamav -s /bin/false -c "Clam Antivirus" clamav
-          sudo apt install ${{ github.workspace }}/clamav-1.3.1.linux.x86_64.deb
-          sudo touch /var/log/freshclam.log
-          sudo chown clamav:clamav /var/log/freshclam.log
-          sudo mv /usr/local/etc/freshclam.conf.sample /usr/local/etc/freshclam.conf
-          sudo sed -i -e "s/Example/#Example/" /usr/local/etc/freshclam.conf
-          sudo sed -i -e "s:#DatabaseDirectory /var/lib/clamav:DatabaseDirectory /var/lib/clamav:" /usr/local/etc/freshclam.conf
-          sudo sed -i -e "s:#UpdateLogFile /var/log/freshclam.log:UpdateLogFile /var/log/freshclam.log:" /usr/local/etc/freshclam.conf
-          sudo sed -i -e "s/#DatabaseOwner clamupdate/DatabaseOwner clamupdate/" /usr/local/etc/freshclam.conf
-          sudo freshclam --quiet
-
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.8
-
-      - name: Dockerfile Scan
-        id: checkov
-        uses: bridgecrewio/checkov-action@master
-        with:
-          quiet: true
-          file: Dockerfile
-          skip_check: CKV_DOCKER_2
-          framework: dockerfile
-
-      - name: AntiMalware Img Scan
-        run: |
-          mkdir ${{ github.workspace }}/scan_tmp
-          tar -xf ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar -C ${{ github.workspace }}/scan_tmp
-          clamscan -r ${{ github.workspace }}/scan_tmp
-          
-      - name: Vulnerability Img Scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ env.IMG_NAME }}:${{ github.sha }}
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL'
-
-      - name: Gen md5sum for Img Tar
-        run: md5sum ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar
-
-      - name: Upload App Img Tar as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: img-artifact-${{ env.IMG_NAME }}
-          path: ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar
-
+  CallScanWorkflow:
+    uses: ./.github/workflows/scan.yml
+    with:
+      testvar: somevalue
   PreDeployDev:
     if: github.event_name == 'pull_request'
     needs: [Build]
