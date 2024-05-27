@@ -17,8 +17,8 @@ jobs:
   CallScanWorkflow:
     uses: ./.github/workflows/scan.yml
     with:
-      parent_image: ${{ env.PARENT_IMAGE }}
-      img_name: ${{ env.IMG_NAME }}
+      parent_image: $PARENT_IMAGE
+      img_name: $IMG_NAME
   PreDeployDev:
     if: github.event_name == 'pull_request'
     needs: [CallScanWorkflow]
