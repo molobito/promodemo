@@ -3,17 +3,15 @@ name: SCAN
 on:
   workflow_call:
     inputs:
-      testvar:
-        required: false
+      parent_image:
+        required: true
+        type: string
+      img_name:
+        required: true
         type: string
 env:
-  PARENT_IMAGE: "gcr.io/distroless/static-debian12@sha256:8cbe18a8a9a9fefe70590dc8f6a7bc70b4bbe41f262d9dab9084337adabf6d26"
-  IMG_NAME: "promodemoapp"
-  AWS_REGION: "us-east-1"
-  AWS_KMS_KEY: "alias/cosign-aws-777444"
-  DEV_ACT: "282527170177"
-  STAGE_ACT: "053353455593"
-  PROD_ACT: "842572306205"
+  PARENT_IMAGE: ${{ inputs.parent_image }}
+  IMG_NAME: ${{ inputs.img_name }}
 jobs:
   Build:
     runs-on: ubuntu-latest
