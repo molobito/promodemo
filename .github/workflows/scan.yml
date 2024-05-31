@@ -74,6 +74,11 @@ jobs:
       - name: Gen md5sum for Img Tar
         run: md5sum ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar
 
+      - name: Attest Image Tar
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: '${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar'
+
       - name: Upload App Img Tar as Artifact
         uses: actions/upload-artifact@v4
         with:
