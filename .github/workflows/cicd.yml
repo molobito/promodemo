@@ -121,6 +121,7 @@ jobs:
       contents: read
       packages: write
       id-token: write
+      attestations: write
     environment:
       name: Dev
       url: ${{ steps.gen_img_digest.outputs.URL_OUTPUT }}
@@ -211,6 +212,7 @@ jobs:
       contents: read
       packages: write
       id-token: write
+      attestations: write
     environment:
       name: Staging
       url: ${{ steps.gen_img_digest.outputs.URL_OUTPUT }}
@@ -300,6 +302,7 @@ jobs:
       contents: read
       packages: write
       id-token: write
+      attestations: write
     environment:
       name: Prod
       url: ${{ steps.gen_img_digest.outputs.URL_OUTPUT }}
