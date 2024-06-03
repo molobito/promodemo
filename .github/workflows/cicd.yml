@@ -105,7 +105,7 @@ jobs:
       - name: Generate Container Image attestation
         uses: actions/attest-build-provenance@v1
         with:
-          subject-name: ${{ steps.gen_img_digest.outputs.IMAGE_DIGEST }}
+          subject-name: ${{ env.DEV_ACT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMG_NAME }}
           subject-digest: sha256:${{ steps.gen_img_digest.outputs.SHA_VALUE }}
           push-to-registry: true
 
@@ -196,7 +196,7 @@ jobs:
       - name: Generate Container Image attestation
         uses: actions/attest-build-provenance@v1
         with:
-          subject-name: ${{ steps.gen_img_digest.outputs.IMAGE_DIGEST }}
+          subject-name: ${{ env.DEV_ACT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMG_NAME }}
           subject-digest: sha256:${{ steps.gen_img_digest.outputs.SHA_VALUE }}
           push-to-registry: true
 
@@ -285,7 +285,7 @@ jobs:
       - name: Generate Container Image attestation
         uses: actions/attest-build-provenance@v1
         with:
-          subject-name: ${{ steps.gen_img_digest.outputs.IMAGE_DIGEST }}
+          subject-name: ${{ env.STAGE_ACT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMG_NAME }}
           subject-digest: sha256:${{ steps.gen_img_digest.outputs.SHA_VALUE }}
           push-to-registry: true
 
@@ -374,7 +374,7 @@ jobs:
       - name: Generate Container Image attestation
         uses: actions/attest-build-provenance@v1
         with:
-          subject-name: ${{ steps.gen_img_digest.outputs.IMAGE_DIGEST }}
+          subject-name: ${{ env.PROD_ACT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMG_NAME }}
           subject-digest: sha256:${{ steps.gen_img_digest.outputs.SHA_VALUE }}
           push-to-registry: true
 
