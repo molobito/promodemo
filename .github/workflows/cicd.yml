@@ -184,6 +184,14 @@ jobs:
             SHA_SUBSTR=${SHA_VALUE:0:8}
             echo "URL_OUTPUT=https://dev.${SHA_SUBSTR}.com" >> $GITHUB_OUTPUT
             echo "IMAGE_DIGEST=$IMG_DIGEST" >> $GITHUB_OUTPUT
+            echo "SHA_VALUE=$SHA_VALUE" >> $GITHUB_OUTPUT
+            
+      - name: Generate Container Image attestation
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ${{ steps.gen_img_digest.outputs.IMAGE_DIGEST }}
+          subject-digest: ${{ steps.gen_img_digest.outputs.SHA_VALUE }}
+          push-to-registry: true
 
       - name: Crypto-Sign Image
         shell: bash
@@ -265,6 +273,18 @@ jobs:
             SHA_SUBSTR=${SHA_VALUE:0:8}
             echo "URL_OUTPUT=https://stage.${SHA_SUBSTR}.com" >> $GITHUB_OUTPUT
             echo "IMAGE_DIGEST=$IMG_DIGEST" >> $GITHUB_OUTPUT
+            echo "SHA_VALUE=$SHA_VALUE" >> $GITHUB_OUTPUT
+            
+      - name: Generate Container Image attestation
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ${{ steps.gen_img_digest.outputs.IMAGE_DIGEST }}
+          subject-digest: ${{ steps.gen_img_digest.outputs.SHA_VALUE }}
+          push-to-registry: true
+
+      - name: Crypto-Sign Image
+        shell: bash
+        run: cosign sign --key awskms:///${{ env.AWS_KMS_KEY }} --tlog-upload=false ${{ steps.gen_img_digest.outputs.IMAGE_DIGEST }}
 
   DeployProd:
     needs: [DeployStaging]
@@ -342,4 +362,15 @@ jobs:
             SHA_SUBSTR=${SHA_VALUE:0:8}
             echo "URL_OUTPUT=https://prod.${SHA_SUBSTR}.com" >> $GITHUB_OUTPUT
             echo "IMAGE_DIGEST=$IMG_DIGEST" >> $GITHUB_OUTPUT
+            echo "SHA_VALUE=$SHA_VALUE" >> $GITHUB_OUTPUT
+            
+      - name: Generate Container Image attestation
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ${{ steps.gen_img_digest.outputs.IMAGE_DIGEST }}
+          subject-digest: ${{ steps.gen_img_digest.outputs.SHA_VALUE }}
+          push-to-registry: true
 
+      - name: Crypto-Sign Image
+        shell: bash
+        run: cosign sign --key awskms:///${{ env.AWS_KMS_KEY }} --tlog-upload=false ${{ steps.gen_img_digest.outputs.IMAGE_DIGEST }}
