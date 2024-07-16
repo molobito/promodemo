@@ -19,4 +19,9 @@ spec:
         ports:
         - containerPort: 80
         securityContext:
+<<<<<<< HEAD
           privileged: false
+=======
+          ## Security issue - privileged container
+          privileged: true
+>>>>>>> 0431f9c78e3020f84493881db00df2081fb7a23b
