@@ -14,7 +14,7 @@ spec:
         app: app1
     spec:
       containers:
-              - image: 282527170177.dkr.ecr.us-east-1.amazonaws.com/base-img-amazonlinux:version1.0
+      - image: 282527170177.dkr.ecr.us-east-1.amazonaws.com/base-img-amazonlinux:version1.0
         name: app1
         ports:
         - containerPort: 80
