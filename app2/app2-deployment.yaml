@@ -14,7 +14,7 @@ spec:
         app: app2
     spec:
       containers:
-      - image: 282527170177.dkr.ecr.us-east-1.amazonaws.com/httpd:latest
+      - image: 282527170177.dkr.ecr.us-east-1.amazonaws.com/promodemoapp:5788bf169a9b638355c01b093a8454c81029669f
         name: app2
         ports:
         - containerPort: 80
