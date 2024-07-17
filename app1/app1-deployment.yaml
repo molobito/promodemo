@@ -21,3 +21,4 @@ spec:
         securityContext:
           privileged: false
           readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
