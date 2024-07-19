@@ -14,6 +14,7 @@ spec:
         app: app1
     spec:
       containers:
+      # Comment TEST 1
       - image: 282527170177.dkr.ecr.us-east-1.amazonaws.com/promodemoapp:5788bf169a9b638355c01b093a8454c81029669f
         name: app1
         ports:
