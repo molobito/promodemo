@@ -5,7 +5,8 @@ metadata:
   namespace: app1
 spec:
   podSelector:
-    app: app1
+    matchLabels:
+      app: app1
   policyTypes:
   - Ingress
   - Egress
