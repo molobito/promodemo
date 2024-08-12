@@ -4,7 +4,8 @@ metadata:
   name: default-deny
   namespace: app1
 spec:
-  podSelector: {}
+  podSelector:
+    app: app1
   policyTypes:
   - Ingress
   - Egress
