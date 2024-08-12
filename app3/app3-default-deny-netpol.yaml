@@ -4,9 +4,10 @@ metadata:
   name: default-deny
   namespace: app3
 spec:
-  podSelector:
-    matchLabels:
-      app: app3
+  podSelector: {}
+# podSelector:
+#   matchLabels:
+#     app: app3
   policyTypes:
   - Ingress
   - Egress
