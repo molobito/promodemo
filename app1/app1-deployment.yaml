@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app1
+  name: app1b
 spec:
   replicas: 1
   revisionHistoryLimit: 3
@@ -15,16 +15,17 @@ spec:
     spec:
       containers:
       # Comment TEST 1
-      - image: 282527170177.dkr.ecr.us-east-1.amazonaws.com/promodemoapp@sha256:dee30aa751da9633d38ea403d8512f564fdaaa3bf375ecbf63b9686604751b65
-        name: app1
-        ports:
-        - containerPort: 3333
+      - name: app1
+        image: busybox:stable-glibc@sha256:50aa4698fa6262977cff89181b2664b99d8a56dbca847bf62f2ef04854597cf8
+        args:
+        - sleep
+        - "3600"
         securityContext:
           privileged: false
           readOnlyRootFilesystem: true
           allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-              - ALL
-            add:
-              - NET_RAW
+        # capabilities:
+        #   drop:
+        #     - ALL
+        #   add:
+        #     - NET_RAW
