@@ -28,9 +28,10 @@ jobs:
     needs: [CallScanWorkflow]
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       packages: write
       id-token: write
+      attestations: write
     environment:
       name: Dev
       url: ${{ steps.gen_img_digest.outputs.URL_OUTPUT }}
