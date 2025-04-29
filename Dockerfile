@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 ARG PARENT_IMG
-FROM golang:1.22.2-bullseye@sha256:3b55bf3986b2651a515f48ddf758b80a7d78d8be18706fd98aa74241992dac96 as build-env
+FROM golang:1.24.2-bullseye@sha256:268fbb44dc1c3fd131364794ad384891bb9bb4daaa7b19679be8c82320dbaaab as build-env
 WORKDIR /src
 COPY app.go ./main.go
 RUN CGO_ENABLED=0 go build -o /bin/hello ./main.go
