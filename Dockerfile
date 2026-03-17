@@ -5,6 +5,9 @@ COPY <<EOF ./main.go
 package main
 import "fmt"
 func main() {
+  fmt.Println("hello, world")
+}
+EOF
 EOF
 RUN CGO_ENABLED=0 go build -o /bin/hello ./main.go
 FROM cgr.dev/chainguard/static@sha256:d6a97eb401cbc7c6d48be76ad81d7899b94303580859d396b52b67bc84ea7345
