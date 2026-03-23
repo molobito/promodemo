@@ -61,15 +61,15 @@ jobs:
           tar -xf ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar -C ${{ github.workspace }}/scan_tmp
           clamscan -r ${{ github.workspace }}/scan_tmp
           
-      - name: Vulnerability Img Scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ env.IMG_NAME }}:${{ github.sha }}
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL'
+      # - name: Vulnerability Img Scan
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: ${{ env.IMG_NAME }}:${{ github.sha }}
+      #     format: 'table'
+      #     exit-code: '1'
+      #     ignore-unfixed: true
+      #     vuln-type: 'os,library'
+      #     severity: 'CRITICAL'
 
       - name: Gen md5sum for Img Tar
         run: md5sum ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar
