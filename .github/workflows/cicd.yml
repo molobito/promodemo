@@ -102,6 +102,7 @@ jobs:
             SHA_SUBSTR=${SHA_VALUE:0:8}
             echo "URL_OUTPUT=https://dev.${SHA_SUBSTR}.com" >> $GITHUB_OUTPUT
             echo "SHA_VALUE=$SHA_VALUE" >> $GITHUB_OUTPUT
+            echo "IMAGE_DIGEST=$IMG_DIGEST" >> $GITHUB_OUTPUT
             
       - name: Generate Container Image attestation
         uses: actions/attest-build-provenance@v2
