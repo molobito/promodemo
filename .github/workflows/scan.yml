@@ -75,7 +75,7 @@ jobs:
         run: md5sum ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar
 
       - name: Attest Image Tar
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: '${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar'
 
