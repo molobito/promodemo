@@ -80,7 +80,7 @@ jobs:
           subject-path: '${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar'
 
       - name: Upload App Img Tar as Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: img-artifact-${{ env.IMG_NAME }}
           path: ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar
