@@ -67,17 +67,7 @@ jobs:
           image: ${{ env.IMG_NAME }}:${{ github.sha }}
           output-format: "table"
           severity-cutoff: "high"
-
-          
-      # - name: Vulnerability Img Scan
-      #   uses: aquasecurity/trivy-action@master
-      #   with:
-      #     image-ref: ${{ env.IMG_NAME }}:${{ github.sha }}
-      #     format: 'table'
-      #     exit-code: '1'
-      #     ignore-unfixed: true
-      #     vuln-type: 'os,library'
-      #     severity: 'CRITICAL'
+          fail-build: true
 
       - name: Gen md5sum for Img Tar
         run: md5sum ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar
