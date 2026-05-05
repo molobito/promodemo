@@ -60,6 +60,14 @@ jobs:
           mkdir ${{ github.workspace }}/scan_tmp
           tar -xf ${{ github.workspace }}/${{ env.IMG_NAME }}.img.tar -C ${{ github.workspace }}/scan_tmp
           clamscan -r ${{ github.workspace }}/scan_tmp
+
+      - name: Scan Container Image
+        uses: anchore/scan-action@v7
+        with: 
+          image: ${{ env.IMG_NAME }}:${{ github.sha }}
+          output-format: "table"
+          severity-cutoff: "high"
+
           
       # - name: Vulnerability Img Scan
       #   uses: aquasecurity/trivy-action@master
