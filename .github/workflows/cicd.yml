@@ -42,7 +42,7 @@ jobs:
 
     steps:
       - name: Configure AWS Creds
-        uses: aws-actions/configure-aws-credentials@v6.1.0
+        uses: aws-actions/configure-aws-credentials@v6.2.0
         with:
           role-to-assume: arn:aws:iam::${{ env.DEV_ACT }}:role/github-dev-role
           role-session-name: github_aws_federated_oidc
@@ -134,7 +134,7 @@ jobs:
 
     steps:
       - name: Configure AWS Creds
-        uses: aws-actions/configure-aws-credentials@v6.1.0
+        uses: aws-actions/configure-aws-credentials@v6.2.0
         with:
           role-to-assume: arn:aws:iam::${{ env.DEV_ACT }}:role/github-dev-role
           role-session-name: github_aws_federated_oidc
@@ -225,7 +225,7 @@ jobs:
 
     steps:
       - name: Configure AWS Creds
-        uses: aws-actions/configure-aws-credentials@v6.1.0
+        uses: aws-actions/configure-aws-credentials@v6.2.0
         with:
           role-to-assume: arn:aws:iam::${{ env.STAGE_ACT }}:role/github-stage-role
           role-session-name: github_aws_federated_oidc
@@ -315,7 +315,7 @@ jobs:
 
     steps:
       - name: Configure AWS Creds
-        uses: aws-actions/configure-aws-credentials@v6.1.0
+        uses: aws-actions/configure-aws-credentials@v6.2.0
         with:
           role-to-assume: arn:aws:iam::${{ env.PROD_ACT }}:role/github-prod-role
           role-session-name: github_aws_federated_oidc
